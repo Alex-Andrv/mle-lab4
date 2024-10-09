@@ -49,11 +49,12 @@ class Trainer:
         self.log.info("MultiModel is ready")
 
         # Initialize Kafka Producer
+        print(self.database_config['KAFKA']['BOOTSTRAP_SERVERS'])
         self.kafka_producer = KafkaProducer(
-            bootstrap_servers=self.config['KAFKA']['BOOTSTRAP_SERVERS'],
+            bootstrap_servers=self.database_config['KAFKA']['BOOTSTRAP_SERVERS'],
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
-        self.kafka_topic = self.config['KAFKA']['TOPIC']
+        self.kafka_topic = self.database_config['KAFKA']['TOPIC']
         self.log.info("Kafka Producer initialized")
 
     def load_data_from_db(self, table_name):

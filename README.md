@@ -28,5 +28,3 @@ docker exec -it <vault_container_id> /bin/sh
 
 vault kv put secret/db POSTGRES_USER=penguin_user POSTGRES_PASSWORD=penguin_password POSTGRES_DB=penguins_db
 
-# mle-lab3
-# mle-lab4

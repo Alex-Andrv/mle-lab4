@@ -28,8 +28,8 @@ class PredictionConsumer:
 
         # Kafka Consumer setup
         self.consumer = KafkaConsumer(
-            self.config['KAFKA']['TOPIC'],
-            bootstrap_servers=self.config['KAFKA']['BOOTSTRAP_SERVERS'],
+            self.database_config['KAFKA']['TOPIC'],
+            bootstrap_servers=self.database_config['KAFKA']['BOOTSTRAP_SERVERS'],
             auto_offset_reset='earliest',
             enable_auto_commit=True,
             value_deserializer=lambda x: json.loads(x.decode('utf-8'))

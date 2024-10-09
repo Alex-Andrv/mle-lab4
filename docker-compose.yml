@@ -4,17 +4,19 @@ services:
   penguin-app:
     build: .
     image: sesh31/mle-lab4-penguin-app:latest
-    command: sh -c "python src/preprocess.py && python src/DataLoader.py && python src/app.py"
+    command: sh -c "sleep 60 && python src/preprocess.py && python src/DataLoader.py && python src/app.py"
     ports:
       - "5001:5001"
     depends_on:
       - postgres
       - vault
+      - kafka  # Добавлена зависимость от Kafka
     networks:
       - vault-network
     environment:
       VAULT_ADDR: "http://vault:8200"
       VAULT_TOKEN: "root"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"  # Добавлен Kafka
 
   postgres:
     image: postgres:13
@@ -51,14 +53,15 @@ services:
       echo 'DONE!!!' && \
       tail -f /dev/null"
 
-
   kafka:
     image: wurstmeister/kafka:latest
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
     depends_on:
       - zookeeper
     networks:
@@ -74,9 +77,10 @@ services:
   log-collector:
     build: .
     image: sesh31/mle-lab4-log-collector:latest
-    command: sh -c "python src/LogCollector.py"
+    command: sh -c "sleep 60 && python src/LogCollector.py"
     depends_on:
       - kafka
+      - vault
       - postgres
     networks:
       - vault-network
